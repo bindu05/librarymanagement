@@ -1,5 +1,6 @@
 package com.capgemini.librarymanagement.beans;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -9,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table
-public class BooksTransaction {
+public class BooksTransaction implements Serializable {
 
 	@Id
 	@Column(name="transaction_id")

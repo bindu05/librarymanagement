@@ -16,7 +16,7 @@ public class CommonServicesImpl implements CommonServices {
 	private CommonDAO dao;
 
 	@Override
-	public Users login(Integer userId, String password) {
+	public Users login(String userId, String password) {
 		return dao.login(userId, password);
 	}
 
@@ -31,8 +31,17 @@ public class CommonServicesImpl implements CommonServices {
 	}
 
 	@Override
-	public List<BooksInventory> searchBook(String name) {
-		return dao.searchBook(name);
+	public List<BooksInventory> searchBookByName(String name) {
+		return dao.searchBookByName(name);
 	}
+
+	@Override
+	public List<BooksInventory> searchBookByAuthor(String author1) {
+		return dao.searchBookByAuthor(author1);
+	}
+
+	
+
+	
 
 }

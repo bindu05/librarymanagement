@@ -1,9 +1,9 @@
 package com.capgemini.librarymanagement.services;
 
-import com.capgemini.librarymanagement.beans.BooksInventory;
+import com.capgemini.librarymanagement.beans.BooksRegistration;
 
 public interface StudentsServices {
 	
-	public BooksInventory requestBook(BooksInventory book);
+	public BooksRegistration requestBook(BooksRegistration book);
 	
 }

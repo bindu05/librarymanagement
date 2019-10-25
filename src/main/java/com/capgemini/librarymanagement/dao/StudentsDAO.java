@@ -1,9 +1,9 @@
 package com.capgemini.librarymanagement.dao;
 
-import com.capgemini.librarymanagement.beans.BooksInventory;
+import com.capgemini.librarymanagement.beans.BooksRegistration;
 
 public interface StudentsDAO {
 	
-	public BooksInventory requestBook(BooksInventory book);
+	public BooksRegistration requestBook(BooksRegistration book);
 
 }

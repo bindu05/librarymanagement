@@ -1,6 +1,7 @@
 package com.capgemini.librarymanagement.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.capgemini.librarymanagement.beans.BooksInventory;
+import com.capgemini.librarymanagement.beans.BooksRegistration;
 import com.capgemini.librarymanagement.beans.BooksTransaction;
 
 @Repository
@@ -21,6 +23,9 @@ public class LibrarianDAOImpl implements LibrarianDAO {
 	@Autowired
 	private CommonDAO dao;
 
+	
+	
+	
 	@Override
 	public Boolean addBook(BooksInventory book) {
 		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
@@ -29,7 +34,7 @@ public class LibrarianDAOImpl implements LibrarianDAO {
 
 		try{
 
-			BooksInventory temp = (BooksInventory) dao.searchBook(book.getBookName());
+			BooksInventory temp = (BooksInventory) dao.searchBookByName(book.getBookName());
 			if(temp!=null) {
 			}else {
 				book.setBookId(book.getBookId());
@@ -62,7 +67,7 @@ public class LibrarianDAOImpl implements LibrarianDAO {
 
 		try {
 			transaction.begin();
-			String jpql="UPDATE Book SET bus_name=:nm,author1=:aut1,author2=:aut2,"
+			String jpql="UPDATE BooksInventory SET book_name=:nm,author1=:aut1,author2=:aut2,"
 					+ "publisher=:pb,yearofpublication=:yop WHERE book_id=:id";
 			Query query=(Query) entityManager.createQuery(jpql);	
 			query.setParameter("id",book.getBookId());
@@ -118,7 +123,7 @@ public class LibrarianDAOImpl implements LibrarianDAO {
 		EntityTransaction transaction=entityManager.getTransaction();
 		List<BooksTransaction> arraylist=new ArrayList<BooksTransaction>();
 		try {
-			String jpql="from Book";
+			String jpql="from BooksTransaction";
 			Query query=(Query) entityManager.createQuery(jpql);
 			List<BooksTransaction> list=query.getResultList();
 			for(BooksTransaction book:list) {
@@ -132,22 +137,39 @@ public class LibrarianDAOImpl implements LibrarianDAO {
 	
 
 	@Override
-	public List<BooksInventory> showAllRequestedBooksInfo() {
+	public List<BooksRegistration> showAllRequestedBooksInfo() {
 		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
-		List<BooksInventory> arraylist=new ArrayList<BooksInventory>();
+		List<BooksRegistration> arraylist=new ArrayList<BooksRegistration>();
 		try {
-			String jpql="from Book";
+			String jpql="from BooksRegistration";
 			Query query=(Query) entityManager.createQuery(jpql);
-			List<BooksInventory> list=query.getResultList();
-			for(BooksInventory book:list) {
+			List<BooksRegistration> list=query.getResultList();
+			for(BooksRegistration book:list) {
 				arraylist.add(book);
 			}
 		} catch (Exception e) {
 			return arraylist;
 		}
 		return arraylist;
+	}
+
+	@Override
+	public BooksTransaction acceptRequest(String RegistrationId) {
+		return null;
+	}
+
+	@Override
+	public List<BooksInventory> showAllBooks() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BooksTransaction addFine(String registrationId, Date returnDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

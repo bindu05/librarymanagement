@@ -17,8 +17,11 @@ import com.capgemini.librarymanagement.beans.Users;
 @Repository
 public class CommonDAOImpl implements CommonDAO {
 
+	
+	
+	
 	@Override
-	public Users login(Integer userId, String password) {
+	public Users login(String userId, String password) {
 
 		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
@@ -86,7 +89,7 @@ public class CommonDAOImpl implements CommonDAO {
 	}
 
 	@Override
-	public List<BooksInventory> searchBook(String name) {
+	public List<BooksInventory> searchBookByName(String name) {
 		
 		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
@@ -99,6 +102,14 @@ public class CommonDAOImpl implements CommonDAO {
 			arraylist.add(book);
 		}
 		return arraylist;
+	}
+
+
+
+	@Override
+	public List<BooksInventory> searchBookByAuthor(String author1) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

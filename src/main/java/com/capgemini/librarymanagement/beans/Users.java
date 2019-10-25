@@ -1,5 +1,7 @@
 package com.capgemini.librarymanagement.beans;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -7,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table
-public class Users {
+public class Users implements Serializable {
 
 	@Id
 	@Column(name="user_id")

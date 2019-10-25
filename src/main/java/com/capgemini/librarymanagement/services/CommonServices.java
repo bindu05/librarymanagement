@@ -7,10 +7,11 @@ import com.capgemini.librarymanagement.beans.Users;
 
 public interface CommonServices {
 	
-	public Users login(Integer userId, String password);
+	public Users login(String userId, String password);
 	
 	public List<Users> showAllStudentsInfo();
 	public List<Users> showAllLibrariansInfo();
-	public List<BooksInventory> searchBook(String name);
+	public List<BooksInventory> searchBookByAuthor(String author1);
+	public List<BooksInventory> searchBookByName(String name);
 
 }
