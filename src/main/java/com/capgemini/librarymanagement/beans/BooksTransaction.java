@@ -27,7 +27,7 @@ public class BooksTransaction implements Serializable {
 	private Date returnDate;
 	
 	@Column
-	private Integer fine;
+	private long fine;
 
 	// Getters and Setters
 	public String getTransactionId() {
@@ -54,11 +54,11 @@ public class BooksTransaction implements Serializable {
 	public void setReturnDate(Date returnDate) {
 		this.returnDate = returnDate;
 	}
-	public Integer getFine() {
+	public long getFine() {
 		return fine;
 	}
-	public void setFine(Integer fine) {
-		this.fine = fine;
+	public void setFine(long l) {
+		this.fine = l;
 	}
 
 }

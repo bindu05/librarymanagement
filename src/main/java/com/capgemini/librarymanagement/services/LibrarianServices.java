@@ -13,7 +13,7 @@ public interface LibrarianServices {
 	public Boolean updateBook(BooksInventory book);
 	public Boolean deleteBook(String bookId);
 	public List<BooksInventory> showAllBooks();
-	public BooksTransaction acceptRequest(String RegistrationId);
+	public BooksTransaction acceptRequest(String registrationId);
 	public List<BooksTransaction> showAllIssuedBooksInfo();
 	public List<BooksRegistration> showAllRequestedBooksInfo();
 	public BooksTransaction addFine(String registrationId, Date returnDate);

@@ -12,52 +12,53 @@ import com.capgemini.librarymanagement.beans.Users;
 
 @Repository
 public class AdminDAOImpl implements AdminDAO {
-	
-	
-	
+
+
+
 	@Override
 	public Boolean registerStudents(Users user) {
-		
+
 		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
-			try {
-				
-				user.setType("student");
-				if(searchStudents(user.getUserId())!=null) {
-					return false;
-				}else {
-					transaction.begin();
-					entityManager.persist(user);
-					transaction.commit();
-					return true;
-				}		
-			}catch (Exception e) {
-				transaction.rollback();
-				e.printStackTrace();
+		try {
+
+			user.setType("student");
+			if(searchStudents(user.getUserId())!=null) {
 				return false;
-			}
+			}else {
+				transaction.begin();
+				entityManager.persist(user);
+				transaction.commit();
+				return true;
+			}		
+		}catch (Exception e) {
+			transaction.rollback();
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
 	public Boolean modifyStudents(Users user) {
-		
+
 		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
-		
+
 		try {
-			user.setType("student");
+			
 			if(searchStudents(user.getUserId())==null) {
 				return false;
 			}else {
 
-				String jpql="update Users set user_name=:nm, email_id=:em,password=:pw where user_id=:id and type='student'";
+				user.setType("student");
+				String jpql="update Users set  emailId=:em,password=:pw, userName=:nm where userId=:id and type='student'";
 				Query query=(Query) entityManager.createQuery(jpql);	
 				query.setParameter("id",user.getUserId());
-				query.setParameter("nm", user.getUserName());
 				query.setParameter("em", user.getEmailId());
 				query.setParameter("pw", user.getPassword());
+				query.setParameter("nm", user.getUserName());
 				transaction.begin();
 				int res=query.executeUpdate();
 				transaction.commit();
@@ -65,48 +66,57 @@ public class AdminDAOImpl implements AdminDAO {
 					return true;
 				}else {
 					transaction.rollback();
-					return false;
+
 				}		
 			}	
 		}catch(Exception e) {
 			transaction.rollback();
 			e.printStackTrace();
-			return false;
+
 		}
+		return false;
 	}
-	
+
 	@Override
 	public Boolean deleteStudents(String userId) {
 		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
-		
-		Users user=null;
-		user=searchStudents(userId);
-		if(user==null) {
-			return false;
-		}else {
-			transaction.begin();
-			entityManager.remove(user);
-			transaction.commit();
-			return true;
+
+		try {
+			Users user=null;
+			user=searchStudents(userId);
+			if(user==null) {
+				return false;
+			}else {
+				transaction.begin();
+				entityManager.remove(user);
+				transaction.commit();
+				return true;
+			}
+
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
+
 	}
 
 	@Override
 	public Users searchStudents(String userId) {
-		
+
 		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
-		
+
 		Users user=null;
-		String jpql="from Users where user_id= :id and type='student'" ;	
+		String jpql="from Users where userId='"+userId+"' and type='student'" ;	
 		Query query=(Query) entityManager.createQuery(jpql);
-		query.setParameter( "id",userId);
-		
+		//query.setParameter( "id",userId);
+
 		try {
 			Users obj = (Users) query.getSingleResult();
+
 			if(user!=null) {
 				return obj;
 			}else {
@@ -114,24 +124,24 @@ public class AdminDAOImpl implements AdminDAO {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return user;
+			return null;
 		}
 	}
 
-	
+
 	@Override
 	public Boolean deleteLibrarian(String userId) {
 		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
-		
+
 		Users user1=null;
 		user1=searchLibrarian(userId);
 		if(user1==null) {
 			return false;
 		}else {
 			transaction.begin();
-			entityManager.remove(user1);
+			entityManager.remove(userId);
 			transaction.commit();
 			return true;
 		}
@@ -142,24 +152,24 @@ public class AdminDAOImpl implements AdminDAO {
 		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
-		
+
 		try {
 			user.setType("librarian");
 			if(searchStudents(user.getUserId())==null) {
 				return false;
 			}else {
 
-				String jpql="update Users set user_name=:nm, email_id=:em,password=:pw where user_id=:id and type='librarian'";
+				String jpql="update Users set  emailId=:em,password=:pw, userName=:nm, where userId=:id and type='librarian'";
 				Query query=(Query) entityManager.createQuery(jpql);	
 				query.setParameter("id",user.getUserId());
-				query.setParameter("nm", user.getUserName());
 				query.setParameter("em", user.getEmailId());
 				query.setParameter("pw", user.getPassword());
+				query.setParameter("nm", user.getUserName());
 				transaction.begin();
 				int res=query.executeUpdate();
 				transaction.commit();
 				if(res>0) {
-		return true;
+					return true;
 				}else {
 					transaction.rollback();
 					return false;
@@ -177,12 +187,12 @@ public class AdminDAOImpl implements AdminDAO {
 		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
-		
+
 		Users user=null;
-		String jpql="from Users where user_id= :id and type='librarian'" ;	
+		String jpql="from Users where userId= :id and type='librarian'" ;	
 		Query query=(Query) entityManager.createQuery(jpql);
 		query.setParameter( "id",userId);
-		
+
 		try {
 			Users obj = (Users) query.getSingleResult();
 			if(user!=null) {
@@ -196,8 +206,32 @@ public class AdminDAOImpl implements AdminDAO {
 		}
 	}
 
-	
+	@Override
+	public Boolean addLibrarian(Users user) {
+		 	EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
+			EntityManager entityManager=entityManagerFactory.createEntityManager();
+			EntityTransaction transaction=entityManager.getTransaction();
+			try {
 
-	
+				user.setType("librarian");
+				if(searchLibrarian(user.getUserId())!=null) {
+					return false;
+				}else {
+					transaction.begin();
+					entityManager.persist(user);
+					transaction.commit();
+					return true;
+				}		
+			}catch (Exception e) {
+				transaction.rollback();
+				e.printStackTrace();
+				return false;
+			}
+		}
+	}
 
-}
+
+
+
+
+

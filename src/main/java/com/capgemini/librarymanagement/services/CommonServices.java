@@ -13,5 +13,6 @@ public interface CommonServices {
 	public List<Users> showAllLibrariansInfo();
 	public List<BooksInventory> searchBookByAuthor(String author1);
 	public List<BooksInventory> searchBookByName(String name);
+	public Boolean cancelRequest(String registrationId, String userId);
 
 }

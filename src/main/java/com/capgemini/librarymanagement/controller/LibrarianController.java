@@ -1,11 +1,13 @@
 package com.capgemini.librarymanagement.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +20,7 @@ import com.capgemini.librarymanagement.beans.UserResponse;
 import com.capgemini.librarymanagement.services.LibrarianServices;
 
 @RestController
+@CrossOrigin(origins="*", allowedHeaders="*" ,allowCredentials="true" )
 public class LibrarianController {
 	
 	@Autowired
@@ -86,7 +89,7 @@ public class LibrarianController {
 	
 	@GetMapping("/showAllRequestedBooksInfo")
 
-	public UserResponse getAllOwners(HttpSession session,ModelMap modelMap) {
+	public UserResponse showAllRequestedBooks(HttpSession session,ModelMap modelMap) {
 		UserResponse response=new UserResponse();
 		List<BooksRegistration> books=service.showAllRequestedBooksInfo();
 		System.out.println(books);
@@ -101,5 +104,53 @@ public class LibrarianController {
 		return response;
 
 	} // End of showAllRequestedBooksInfo
+	
+	@GetMapping("/showAllBooks")
+
+	public UserResponse showAllBooks(HttpSession session,ModelMap modelMap) {
+		UserResponse response=new UserResponse();
+		List<BooksInventory> books=service.showAllBooks();
+		System.out.println(books);
+		if (books!=null) {
+			response.setStatusCode(201);
+			response.setMessage("success");
+			
+		}else {
+			response.setStatusCode(404);
+			response.setMessage("failed");
+		}
+		return response;
+
+	} // End of showAllBooks
+	
+	@PostMapping("/addFine")
+
+	public BooksTransaction addFine(@RequestBody String registrationId, Date returnDate, ModelMap map) {
+		UserResponse response=new UserResponse();
+		BooksTransaction fine=service.addFine(registrationId, returnDate);
+		if(fine != null) {
+			response.setStatusCode(201);
+			response.setMessage("success");
+		}else {
+			response.setStatusCode(404);
+			response.setMessage("failed");
+		}return fine;
+
+	}//end of addFine
+	
+	@PostMapping("/acceptRequest")
+
+	public BooksTransaction acceptRequest(@RequestBody String registrationId,ModelMap map) {
+		UserResponse response=new UserResponse();
+		BooksTransaction req=service.acceptRequest(registrationId);
+		if(req != null) {
+			response.setStatusCode(201);
+			response.setMessage("success");
+		}else {
+			response.setStatusCode(404);
+			response.setMessage("failed");
+		}return req;
+
+	}//end of acceptRequest
 
 }

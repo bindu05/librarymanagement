@@ -12,6 +12,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 
 import com.capgemini.librarymanagement.beans.BooksInventory;
+import com.capgemini.librarymanagement.beans.BooksRegistration;
 import com.capgemini.librarymanagement.beans.Users;
 
 @Repository
@@ -94,7 +95,7 @@ public class CommonDAOImpl implements CommonDAO {
 		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
-		String jpql="from Book where book_name='"+name+"'";
+		String jpql="from BooksInventory where book_name='"+name+"'";
 		Query query=(Query) entityManager.createQuery(jpql);
 		List<BooksInventory> arraylist=new ArrayList<BooksInventory>();
 		List<BooksInventory> list=query.getResultList();
@@ -108,8 +109,42 @@ public class CommonDAOImpl implements CommonDAO {
 
 	@Override
 	public List<BooksInventory> searchBookByAuthor(String author1) {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
+		EntityManager entityManager=entityManagerFactory.createEntityManager();
+		EntityTransaction transaction=entityManager.getTransaction();
+		String jpql="from BooksInventory where author1='"+author1+"'";
+		Query query=(Query) entityManager.createQuery(jpql);
+		List<BooksInventory> arraylist=new ArrayList<BooksInventory>();
+		List<BooksInventory> list=query.getResultList();
+		for(BooksInventory book:list) {
+			arraylist.add(book);
+		}
+		return arraylist;
 	}
+
+
+
+	@Override
+	public Boolean cancelRequest(String registrationId, String userId) {
+		
+		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
+		EntityManager entityManager=entityManagerFactory.createEntityManager();
+		EntityTransaction transaction=entityManager.getTransaction();
+		transaction.begin();
+		
+		String jpql = "from BooksRegistration where registrationId=:registrationId and userId=:userId";
+		Query query = entityManager.createQuery(jpql);
+		BooksRegistration book = null;
+		try {
+			book=(BooksRegistration) query.getSingleResult();
+			entityManager.remove(book);
+			transaction.commit();
+		}catch (Exception e) {
+			transaction.rollback();
+			return false;
+		}
+		entityManager.close();
+		return true;
+	}// End of cancelRequest
 
 }

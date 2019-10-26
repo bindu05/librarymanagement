@@ -2,6 +2,7 @@ package com.capgemini.librarymanagement.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,7 @@ import com.capgemini.librarymanagement.beans.Users;
 import com.capgemini.librarymanagement.services.AdminServices;
 
 @RestController
+@CrossOrigin(origins="*", allowedHeaders="*" ,allowCredentials="true" )
 public class AdminController {
 	
 	@Autowired
@@ -47,10 +49,10 @@ public class AdminController {
 	
 	@PostMapping("/deleteStudent")
 
-	public Boolean deleteStudents(@RequestBody Users student,ModelMap map) {
-		System.out.println(student.getUserId());
+	public Boolean deleteStudents(String userId,ModelMap map) {
+		
 		UserResponse response=new UserResponse();
-		Boolean student1=service.deleteStudents(student.getUserId());
+		Boolean student1=service.deleteStudents(userId);
 		if(student1) {
 			response.setStatusCode(201);
 			response.setMessage("success");
@@ -63,7 +65,7 @@ public class AdminController {
 	}//end of deleteStudents
 
 	@GetMapping("/searchStudents")
-	public UserResponse SearchStudents(@RequestBody String userId,ModelMap map) {
+	public UserResponse SearchStudents(String userId,ModelMap map) {
 
 		UserResponse response=new UserResponse();
 		try {
@@ -114,7 +116,7 @@ public class AdminController {
 	}//end of deleteStudents
 	
 	@GetMapping("/searchLibrarian")
-	public UserResponse SearchLibrarian(@RequestBody String userId,ModelMap map) {
+	public UserResponse SearchLibrarian(String userId,ModelMap map) {
 
 		UserResponse response=new UserResponse();
 		try {
@@ -132,5 +134,19 @@ public class AdminController {
 		}return response;
 
 	}//end of searchLibrarian
+	
+	@PostMapping("/addLibrarian")
+	public UserResponse  addLibrarian(@RequestBody Users librarian,ModelMap map) {
+		System.out.println(librarian);
+		UserResponse response=new UserResponse();
+		if(service.addLibrarian(librarian)) {
+			response.setStatusCode(201);
+			response.setMessage("success");
+		}else {
+			response.setStatusCode(404);
+			response.setMessage("failed");
+		}return response;
+
+	}//end of addLibrarian
 	
 }

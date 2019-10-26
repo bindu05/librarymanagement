@@ -1,8 +1,10 @@
 package com.capgemini.librarymanagement.dao;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -23,9 +25,6 @@ public class LibrarianDAOImpl implements LibrarianDAO {
 	@Autowired
 	private CommonDAO dao;
 
-	
-	
-	
 	@Override
 	public Boolean addBook(BooksInventory book) {
 		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
@@ -156,20 +155,91 @@ public class LibrarianDAOImpl implements LibrarianDAO {
 	}
 
 	@Override
-	public BooksTransaction acceptRequest(String RegistrationId) {
-		return null;
+	public BooksTransaction acceptRequest(String registrationId) {
+		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
+		EntityManager entityManager=entityManagerFactory.createEntityManager();
+		EntityTransaction transaction=entityManager.getTransaction();
+		transaction.begin();
+		
+		String viewDetails = "from BooksRegistration where registrationId=:registrationId";
+		Query query = entityManager.createQuery(viewDetails);
+		query.setParameter("registrationId", registrationId);
+		
+		BooksRegistration books = (BooksRegistration) query.getSingleResult();
+		Random random = new Random();
+		int transactionId = random.nextInt();
+		
+		if(transactionId<0) {
+			transactionId = transactionId*(-1);
+		}
+		BooksTransaction trans = new BooksTransaction();
+		trans.setRegistrationId(books.getRegistrationId());
+		trans.setTransactionId(Integer.toString(transactionId));
+		trans.setIssueDate(books.getRegistrationDate());
+		trans.setFine(0);
+		
+		Calendar calendar =  Calendar.getInstance();
+		calendar.setTime(books.getRegistrationDate());
+		calendar.add(Calendar.DATE, 15);
+		trans.setReturnDate(calendar.getTime());
+		
+		entityManager.persist(trans);
+		transaction.commit();
+		
+		return trans;
 	}
 
 	@Override
 	public List<BooksInventory> showAllBooks() {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
+		EntityManager entityManager=entityManagerFactory.createEntityManager();
+		EntityTransaction transaction=entityManager.getTransaction();
+		List<BooksInventory> arraylist=new ArrayList<BooksInventory>();
+		try {
+			String jpql="from BooksInventory";
+			Query query=(Query) entityManager.createQuery(jpql);
+			List<BooksInventory> list=query.getResultList();
+			for(BooksInventory book:list) {
+				arraylist.add(book);
+			}
+		} catch (Exception e) {
+			return arraylist;
+		}
+		return arraylist;
 	}
+	
 
 	@Override
 	public BooksTransaction addFine(String registrationId, Date returnDate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
+		EntityManager entityManager=entityManagerFactory.createEntityManager();
+		EntityTransaction transaction=entityManager.getTransaction();
+		
+		transaction.begin();
+		String viewDetails = "from BooksTransaction where registrationId=:registrationId";
+		Query query = entityManager.createQuery(viewDetails);
+		query.setParameter("registrationId", registrationId);
+		
+		BooksTransaction book = (BooksTransaction) query.getSingleResult();
+		Date rn = book.getReturnDate();
+		
+		BooksTransaction booksPresent = entityManager.find(BooksTransaction.class, book.getTransactionId());
+		int days = (int)((returnDate.getTime()-rn.getTime())/(1000*60*60*24));
+		if((days-15)>0) {
+			booksPresent.setFine((days-15)*1);
+		}else {
+			booksPresent.setFine(book.getFine());
+		}
+		
+		booksPresent.setIssueDate(book.getIssueDate());
+		booksPresent.setRegistrationId(book.getRegistrationId());
+		booksPresent.setReturnDate(book.getReturnDate());
+		booksPresent.setTransactionId(book.getTransactionId());
+		
+		transaction.commit();
+		System.out.println(booksPresent.getFine());
+		return book;
+		
+	} // End of addFine
 
 }

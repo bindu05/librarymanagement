@@ -9,6 +9,7 @@ public interface AdminDAO {
 	public Boolean deleteStudents(String userId);
 	public Users searchStudents(String userId);
 	
+	public Boolean addLibrarian(Users user);
 	public Boolean modifyLibrarian(Users user);
 	public Boolean deleteLibrarian(String userId);
 	public Users searchLibrarian(String userId);
