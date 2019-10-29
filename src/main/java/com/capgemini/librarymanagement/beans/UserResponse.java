@@ -2,15 +2,20 @@ package com.capgemini.librarymanagement.beans;
 
 import java.io.Serializable;
 
-import com.capgemini.librarymanagement.beans.Users;
-
 public class UserResponse implements Serializable {
 	
 	private int statusCode;
 	private String message;
 	private String description;
 	private Users user;
+	private BooksInventory book;
 	
+	public BooksInventory getBook() {
+		return book;
+	}
+	public void setBook(BooksInventory book) {
+		this.book = book;
+	}
 	public int getStatusCode() {
 		return statusCode;
 	}

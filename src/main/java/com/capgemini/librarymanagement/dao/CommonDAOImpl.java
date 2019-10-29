@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
@@ -18,18 +19,18 @@ import com.capgemini.librarymanagement.beans.Users;
 @Repository
 public class CommonDAOImpl implements CommonDAO {
 
-	
-	
-	
+	@PersistenceUnit
+	private EntityManagerFactory entityManagerFactory;
+
 	@Override
 	public Users login(String userId, String password) {
 
-		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
+
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
 
 		Users user=null;
-		String jpql="from Users where userId= :id  and password= :pw  and type='admin'" ;	
+		String jpql="from Users where userId= :id  and password= :pw" ;	
 		Query query=(Query) entityManager.createQuery(jpql);
 		query.setParameter( "id",userId);
 		query.setParameter( "pw",password);
@@ -52,8 +53,8 @@ public class CommonDAOImpl implements CommonDAO {
 
 	@Override
 	public List<Users> showAllStudentsInfo() {
+
 		
-		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
 		List<Users> arraylist=new ArrayList<Users>();
@@ -72,7 +73,7 @@ public class CommonDAOImpl implements CommonDAO {
 
 	@Override
 	public List<Users> showAllLibrariansInfo() {
-		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
+		
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
 		List<Users> arraylist=new ArrayList<Users>();
@@ -90,26 +91,8 @@ public class CommonDAOImpl implements CommonDAO {
 	}
 
 	@Override
-	public List<BooksInventory> searchBookByName(String name) {
-		
-		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
-		EntityManager entityManager=entityManagerFactory.createEntityManager();
-		EntityTransaction transaction=entityManager.getTransaction();
-		String jpql="from BooksInventory where book_name='"+name+"'";
-		Query query=(Query) entityManager.createQuery(jpql);
-		List<BooksInventory> arraylist=new ArrayList<BooksInventory>();
-		List<BooksInventory> list=query.getResultList();
-		for(BooksInventory book:list) {
-			arraylist.add(book);
-		}
-		return arraylist;
-	}
-
-
-
-	@Override
 	public List<BooksInventory> searchBookByAuthor(String author1) {
-		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
+		
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
 		String jpql="from BooksInventory where author1='"+author1+"'";
@@ -127,24 +110,26 @@ public class CommonDAOImpl implements CommonDAO {
 	@Override
 	public Boolean cancelRequest(String registrationId, String userId) {
 		
-		EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("TestPersistence");
 		EntityManager entityManager=entityManagerFactory.createEntityManager();
 		EntityTransaction transaction=entityManager.getTransaction();
 		transaction.begin();
-		
-		String jpql = "from BooksRegistration where registrationId=:registrationId and userId=:userId";
-		Query query = entityManager.createQuery(jpql);
-		BooksRegistration book = null;
+		String select="from Registration where registrationId=:registrationId and userId=:userId";
+		Query query=entityManager.createQuery(select);
+
+		query.setParameter("registrationId", registrationId);
+		query.setParameter("userId", userId);
+		BooksRegistration book=null;
 		try {
-			book=(BooksRegistration) query.getSingleResult();
+			book=(BooksRegistration)query.getSingleResult();
 			entityManager.remove(book);
 			transaction.commit();
-		}catch (Exception e) {
+
+		}catch(Exception e) {
 			transaction.rollback();
 			return false;
 		}
 		entityManager.close();
 		return true;
-	}// End of cancelRequest
+	}
 
 }

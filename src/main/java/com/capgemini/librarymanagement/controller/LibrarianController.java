@@ -69,23 +69,6 @@ public class LibrarianController {
 
 	}//end of deleteBook
 	
-	@GetMapping("/showAllIssuedBooksInfo")
-
-	public UserResponse showAllIssuedBooksInfo(HttpSession session,ModelMap modelMap) {
-		UserResponse response=new UserResponse();
-		List<BooksTransaction> books=service.showAllIssuedBooksInfo();
-		System.out.println(books);
-		if (books!=null) {
-			response.setStatusCode(201);
-			response.setMessage("success");
-			
-		}else {
-			response.setStatusCode(404);
-			response.setMessage("failed");
-		}
-		return response;
-
-	} // End of showAllIssuedBooksInfo
 	
 	@GetMapping("/showAllRequestedBooksInfo")
 

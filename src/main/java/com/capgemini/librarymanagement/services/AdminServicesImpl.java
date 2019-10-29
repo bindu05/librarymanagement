@@ -6,12 +6,13 @@ import org.springframework.stereotype.Service;
 import com.capgemini.librarymanagement.beans.Users;
 import com.capgemini.librarymanagement.dao.AdminDAO;
 import com.capgemini.librarymanagement.utility.Validation;
+import com.capgemini.librarymanagement.utility.ValidationImpl;
 
 @Service
 public class AdminServicesImpl implements AdminServices {
 
-	@Autowired
-	private Validation validation;
+	
+	private Validation validation = new ValidationImpl();
 
 	@Autowired
 	private AdminDAO dao;

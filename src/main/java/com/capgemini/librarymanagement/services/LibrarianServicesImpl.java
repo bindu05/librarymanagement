@@ -11,6 +11,7 @@ import com.capgemini.librarymanagement.beans.BooksRegistration;
 import com.capgemini.librarymanagement.beans.BooksTransaction;
 import com.capgemini.librarymanagement.dao.LibrarianDAO;
 import com.capgemini.librarymanagement.utility.Validation;
+import com.capgemini.librarymanagement.utility.ValidationImpl;
 
 @Service
 public class LibrarianServicesImpl implements LibrarianServices {
@@ -18,8 +19,8 @@ public class LibrarianServicesImpl implements LibrarianServices {
 	@Autowired
 	private LibrarianDAO dao;
 	
-	@Autowired
-	private Validation validation;
+	
+	private Validation validation = new ValidationImpl();
 
 	@Override
 	public Boolean addBook(BooksInventory book) {
@@ -33,13 +34,8 @@ public class LibrarianServicesImpl implements LibrarianServices {
 
 	@Override
 	public Boolean deleteBook(String bookId) {
-		validation.regexId(bookId);
+		
 		return dao.deleteBook(bookId);
-	}
-
-	@Override
-	public List<BooksTransaction> showAllIssuedBooksInfo() {
-		return dao.showAllIssuedBooksInfo();
 	}
 
 	@Override
@@ -49,7 +45,7 @@ public class LibrarianServicesImpl implements LibrarianServices {
 
 	@Override
 	public BooksTransaction acceptRequest(String registrationId) {
-		validation.regexId(registrationId);
+		
 		return dao.acceptRequest(registrationId);
 	}
 
@@ -60,7 +56,7 @@ public class LibrarianServicesImpl implements LibrarianServices {
 
 	@Override
 	public BooksTransaction addFine(String registrationId, Date returnDate) {
-		validation.regexId(registrationId);
+		
 		return dao.addFine(registrationId, returnDate);
 	}
 

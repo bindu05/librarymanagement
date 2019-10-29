@@ -3,7 +3,9 @@ package com.capgemini.librarymanagement.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +20,8 @@ public class AdminController {
 	
 	@Autowired
 	private AdminServices service;
+	
+	
 	
 	@PostMapping("/addStudent")
 	public UserResponse  registerStudents(@RequestBody Users student,ModelMap map) {
@@ -47,24 +51,21 @@ public class AdminController {
 		}return user;
 	}//end of modifyStudents
 	
-	@PostMapping("/deleteStudent")
-
-	public Boolean deleteStudents(String userId,ModelMap map) {
-		
-		UserResponse response=new UserResponse();
-		Boolean student1=service.deleteStudents(userId);
-		if(student1) {
+	@DeleteMapping("/deletestudent")
+	public UserResponse deleteStudent(String userId) {
+		UserResponse response = new UserResponse();
+		if (service.deleteStudents(userId)) {
 			response.setStatusCode(201);
 			response.setMessage("success");
-		}else {
-			response.setStatusCode(404);
+			response.setDescription("student deleted successfully..");
+		} else {
+			response.setStatusCode(401);
 			response.setMessage("failed");
-		}return student1;
-
-
-	}//end of deleteStudents
-
-	@GetMapping("/searchStudents")
+			response.setDescription("unable to delete student!");
+		}
+		return response;
+	}
+	@GetMapping("/searchStudent")
 	public UserResponse SearchStudents(String userId,ModelMap map) {
 
 		UserResponse response=new UserResponse();
@@ -98,29 +99,27 @@ public class AdminController {
 		}return librarian1;
 	}//end of modifyLibrarian
 	
-	@PostMapping("/deleteLibrarian")
-
-	public Boolean deleteLibrarian(@RequestBody Users librarian,ModelMap map) {
-		System.out.println(librarian.getUserId());
-		UserResponse response=new UserResponse();
-		Boolean librarian1=service.deleteStudents(librarian.getUserId());
-		if(librarian1) {
+	@DeleteMapping("/deletelibrarian")
+	public UserResponse deleteLibrarian(String userId) {
+		UserResponse response = new UserResponse();
+		if (service.deleteLibrarian(userId)) {
 			response.setStatusCode(201);
 			response.setMessage("success");
-		}else {
-			response.setStatusCode(404);
+			response.setDescription("librarian deleted successfully..");
+		} else {
+			response.setStatusCode(401);
 			response.setMessage("failed");
-		}return librarian1;
-
-
-	}//end of deleteStudents
+			response.setDescription("unable to delete librarian!");
+		}
+		return response;
+	}
 	
 	@GetMapping("/searchLibrarian")
 	public UserResponse SearchLibrarian(String userId,ModelMap map) {
 
 		UserResponse response=new UserResponse();
 		try {
-			Users librarian = service.searchStudents(userId);
+			Users librarian = service.searchLibrarian(userId);
 			if(librarian!=null) {
 				response.setStatusCode(201);
 				response.setMessage("success");
